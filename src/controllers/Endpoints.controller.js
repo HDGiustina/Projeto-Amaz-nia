@@ -32,6 +32,19 @@ const endpoints = {
         .catch(() => {
             return false;
         });
+    },
+
+
+    async cadastrarEspecie(especie){
+        return await api.post('/especies',especie)
+        .then((response) => {
+            if (response.data) {
+                return response.data.data
+            }
+        })
+        .catch(() => {
+            return false;
+        });
     }
 }
 
