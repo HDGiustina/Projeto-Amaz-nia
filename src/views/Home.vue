@@ -75,9 +75,9 @@ const goToEditarEspecie = (id) => {
   this.$router.push(`/editar-especie/${id}`)
 }
 
-const excluirEspecie = (id) => {
-  // Lógica para excluir a espécie
-  console.log(`Excluir espécie com id: ${id}`)
+const excluirEspecie = async (id) => { 
+  await endpoints.excluirEspecie(id);
+  especies.value = await endpoints.getEspecies();
 }
 
 const loggout = () => {

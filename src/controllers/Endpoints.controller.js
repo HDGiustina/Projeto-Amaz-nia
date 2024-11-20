@@ -45,6 +45,18 @@ const endpoints = {
         .catch(() => {
             return false;
         });
+    },
+    
+    async excluirEspecie(id){
+        return await api.delete('/especies/' + id)
+        .then((response) => {
+            if (response.data) {
+                return response.data.data
+            }
+        })
+        .catch(() => {
+            return false;
+        });
     }
 }
 
