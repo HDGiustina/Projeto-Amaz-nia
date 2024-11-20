@@ -30,39 +30,34 @@
         <div>
           Nome: {{ user.name }} | Email: {{ user.email }}
         </div>
-        <button>Sair</button>
+        <button class="button_loggout" @click="loggout()">Sair</button>
       </v-footer>
     </v-container>
   </v-app>
 </template>
 
-<script>
+<script setup>
 import { defineComponent } from 'vue'
 import { useUserStore } from '@/stores/user.store';
 
-export default defineComponent({
-  name: 'Home',
-  setup() {
-    const userStore = useUserStore()
-    const user = userStore.user
+const userStore = useUserStore()
+const user = userStore.getUser
 
-    const menuItems = [
-      { title: 'Cadastro de Árvore', route: '/cadastro' },
-      { title: 'Lista de Árvores', route: '/lista' }
-    ]
+const menuItems = [
+  { title: 'Cadastro de Árvore', route: '/cadastro' },
+  { title: 'Lista de Árvores', route: '/lista' }
+]
 
-    return {
-      user,
-      menuItems
-    }
-  }
-})
+
+const loggout = () => {
+  userStore.logout()
+}
 </script>
 
 <style scoped>
 .fill-height {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #8ce49247 100%);
+  background: linear-gradient(135deg, #f5f7fa 0%, var(--tertiary-color) 100%);
 }
 
 .home-card {
@@ -74,5 +69,15 @@ export default defineComponent({
   background: var(--tertiary-color);
   margin: 10px 0 0 ;
   border-radius: 15px !important;
+}
+.button_loggout {
+  background: var(--tertiary-color);
+  margin: 0px 10px 0 ;
+  padding: 5px 15px;
+  border-radius: 15px !important;
+  transition: all 0.3s;
+}
+.button_loggout:hover {
+  filter: brightness(0.8);
 }
 </style>
