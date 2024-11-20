@@ -25,7 +25,7 @@ export const useUserStore = defineStore({
             if (this.user) {
                 return this.user
             } else {
-                return localStorage.getItem('session');
+                return JSON.parse(localStorage.getItem('session'));
             }
         },
     },

@@ -12,7 +12,12 @@ const routes = [
     path: '/home',
     name: 'Home',
     component: () => import('@/views/Home.vue'),
-  }
+  },
+  {
+    path: '/cadastraEspecie',
+    name: 'CadastraEspecie',
+    component: () => import('@/views/CadastraEspecie.vue'),
+  },
 ];
 
 const router = createRouter({

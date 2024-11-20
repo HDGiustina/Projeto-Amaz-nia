@@ -11,16 +11,27 @@
             </div>
 
             <v-card-text>
-              <v-list >
-                <v-list-item
-                  v-for="(item, index) in menuItems"
-                  :key="index"
-                  :to="item.route"
-                  class="list_item"
-                >
-                  <v-list-item-title>{{ item.title }}</v-list-item-title>
-                </v-list-item>
-              </v-list>
+              <!-- Botão para incluir uma nova espécie -->
+              <v-btn color="green-darken-2" block class="mb-4" @click="goToIncluirEspecie">
+                Incluir Espécie
+              </v-btn>
+
+              <div class="list_especies">
+                <!-- Lista de espécies cadastradas -->
+                <div v-for="(especie, index) in especies" :key="index" class="especie-item">
+                  <div class="d-flex justify-space-between align-center">
+                    <span>{{ especie.nome_cientifico }}</span>
+                    <div>
+                      <v-btn icon @click="goToEditarEspecie(especie.id)">
+                        <img src="@/assets/icons/editar.svg" alt="Editar espécie" height="20">
+                      </v-btn>
+                      <v-btn icon @click="excluirEspecie(especie.id)" class="ml-2">
+                        <img src="@/assets/icons/delete.svg" alt="Editar espécie" height="20">
+                      </v-btn>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </v-card-text>
           </v-card>
         </v-col>
@@ -37,16 +48,37 @@
 </template>
 
 <script setup>
-import { defineComponent } from 'vue'
+import { ref } from 'vue'
 import { useUserStore } from '@/stores/user.store';
+import endpoints from '@/controllers/Endpoints.controller';
+import router from '@/router';
 
 const userStore = useUserStore()
-const user = userStore.getUser
-const menuItems = [
-  { title: 'Cadastro de Árvore', route: '/cadastro' },
-  { title: 'Lista de Árvores', route: '/lista' }
-]
+let user = ref(false)
+setTimeout(async () => {
+  user.value = await userStore.getUserData()
+}, 100)
 
+let especies = ref([])
+
+setTimeout(async () => {
+  especies.value = await endpoints.getEspecies();
+}, 100)
+
+const goToIncluirEspecie = () => {
+  // Redireciona para a tela de inclusão de espécie
+  router.push('/cadastraEspecie')
+}
+
+const goToEditarEspecie = (id) => {
+  // Redireciona para a tela de edição da espécie
+  this.$router.push(`/editar-especie/${id}`)
+}
+
+const excluirEspecie = (id) => {
+  // Lógica para excluir a espécie
+  console.log(`Excluir espécie com id: ${id}`)
+}
 
 const loggout = () => {
   userStore.logout()
@@ -64,19 +96,28 @@ const loggout = () => {
   backdrop-filter: blur(10px);
   padding: 24px;
 }
-.list_item {
-  background: var(--tertiary-color);
-  margin: 10px 0 0 ;
-  border-radius: 15px !important;
+.especie-item {
+  background: #d9d9d947;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 15px;
+}
+.especie-item:hover {
+  filter: brightness(0.9);
+  cursor: pointer;
 }
 .button_loggout {
   background: var(--tertiary-color);
-  margin: 0px 10px 0 ;
+  margin: 0px 10px 0;
   padding: 5px 15px;
   border-radius: 15px !important;
   transition: all 0.3s;
 }
 .button_loggout:hover {
   filter: brightness(0.8);
+}
+.list_especies {
+  max-height: 400px;
+  overflow: auto;
 }
 </style>

@@ -21,6 +21,18 @@ const endpoints = {
                 return false;
             });
     },
+
+    async getEspecies(){
+        return await api.get('/especies')
+        .then((response) => {
+            if (response.data) {
+                return response.data.data
+            }
+        })
+        .catch(() => {
+            return false;
+        });
+    }
 }
 
 

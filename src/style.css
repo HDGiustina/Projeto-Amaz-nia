@@ -2,4 +2,21 @@
     --primary-color: #8CE492;
     --secondary-color: #202020;
     --tertiary-color: #8CE49247;
-  }
+}
+
+::-webkit-scrollbar {
+    border-radius: 8px;
+    background-color: var(--tertiary-color);
+    width: 5px;
+    height: 7px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: var(--primary-color);
+    cursor: pointer;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #b4ffb9;
+}
