@@ -37,7 +37,7 @@
               ></v-text-field>
 
               <!-- Remember Me & Forgot Password -->
-              <div class="d-flex justify-space-between align-center mb-6">
+              <!-- <div class="d-flex justify-space-between align-center mb-6">
                 <v-checkbox
                   v-model="rememberMe"
                   label="Lembrar-me"
@@ -52,7 +52,7 @@
                 >
                   Esqueceu a senha?
                 </v-btn>
-              </div>
+              </div> -->
 
               <!-- Login Button -->
               <v-btn
@@ -62,17 +62,18 @@
                 block
                 :loading="loading"
                 elevation="2"
+                class="mt-5"
               >
                 Entrar
                 <v-icon icon="mdi-login" end></v-icon>
               </v-btn>
 
               <!-- Divider -->
-              <div class="my-4 text-center">
+              <!-- <div class="my-4 text-center">
                 <v-divider class="my-3">
                   <span class="text-medium-emphasis">ou</span>
                 </v-divider>
-              </div>
+              </div> -->
             </v-form>
           </v-card-text>
 
@@ -105,6 +106,7 @@
 
 <script setup>
 import { ref, reactive } from 'vue';
+import endpoints from '@/controllers/Endpoints.controller';
 
 // Form refs and reactive variables
 const form = ref(null);
@@ -142,18 +144,18 @@ const handleLogin = async () => {
   
   try {
     // Simulated API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Add your actual login logic here
-    console.log('Login attempt:', {
-      email: email.value,
-      password: password.value,
-      rememberMe: rememberMe.value
-    });
-    
-    snackbar.text = 'Login realizado com sucesso!';
-    snackbar.color = 'success';
-    snackbar.show = true;
+    let res = await endpoints.fazerLogin({ email: email.value, senha: password.value })
+
+    console.log(res)
+    if(res){
+      snackbar.text = 'Login realizado com sucesso!';
+      snackbar.color = 'success';
+      snackbar.show = true;
+    } else {
+      snackbar.text = 'Erro ao realizar login. Tente novamente.';
+      snackbar.color = 'error';
+      snackbar.show = true;
+    }
   } catch (error) {
     snackbar.text = 'Erro ao realizar login. Tente novamente.';
     snackbar.color = 'error';
