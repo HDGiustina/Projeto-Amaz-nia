@@ -9,11 +9,10 @@ const endpoints = {
         return await api.post('/usuarios/login', { email: dados.email, senha: dados.senha })
             .then((response) => {
                 if (response.data) {
-                    localStorage.setItem('token', response.data);
-                    // localStorage.setItem('session', JSON.stringify(response.data.user));
+                    localStorage.setItem('token', response.data.data.token);
+                    localStorage.setItem('session', JSON.stringify(response.data.data.user_data));
                     // util.setNotification('success', 'Login Efetuado com sucesso!');
-                    // userStore.setUser(response.data.user);
-                    console.log("Login Efetuado com sucesso!")
+                    userStore.setUser(response.data.data.user_data);
                     router.push({ name: 'Home' });
                     return true;
                 }

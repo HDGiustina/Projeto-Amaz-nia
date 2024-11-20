@@ -28,7 +28,7 @@
       <v-footer app>
         <v-spacer></v-spacer>
         <div>
-          Nome: {{ user.name }} | Email: {{ user.email }}
+          Nome: {{ user.nome }} | Email: {{ user.email }}
         </div>
         <button class="button_loggout" @click="loggout()">Sair</button>
       </v-footer>
@@ -42,7 +42,6 @@ import { useUserStore } from '@/stores/user.store';
 
 const userStore = useUserStore()
 const user = userStore.getUser
-
 const menuItems = [
   { title: 'Cadastro de Árvore', route: '/cadastro' },
   { title: 'Lista de Árvores', route: '/lista' }
