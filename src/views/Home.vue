@@ -18,15 +18,16 @@
 
               <div class="list_especies">
                 <!-- Lista de espécies cadastradas -->
-                <div v-for="(especie, index) in especies" :key="index" class="especie-item">
-                  <div class="d-flex justify-space-between align-center">
+                <div v-for="(especie, index) in especies" :key="index" class="especie-item d-flex align-center">
+                  <img :src="especie?.imagem" alt="Imagem da Espécie" class="especie-imagem" height="50" width="50">
+                  <div class="d-flex justify-space-between ml-2 w-100 align-center">
                     <span>{{ especie.nome_cientifico }}</span>
-                    <div>
+                    <div class="d-flex">
                       <v-btn icon @click="goToEditarEspecie(especie.id)">
                         <img src="@/assets/icons/editar.svg" alt="Editar espécie" height="20">
                       </v-btn>
                       <v-btn icon @click="excluirEspecie(especie.id)" class="ml-2">
-                        <img src="@/assets/icons/delete.svg" alt="Editar espécie" height="20">
+                        <img src="@/assets/icons/delete.svg" alt="Excluir espécie" height="20">
                       </v-btn>
                     </div>
                   </div>
@@ -101,10 +102,16 @@ const loggout = () => {
   margin: 10px 0;
   padding: 10px;
   border-radius: 15px;
+  display: flex;
+  align-items: center;
 }
 .especie-item:hover {
   filter: brightness(0.9);
   cursor: pointer;
+}
+.especie-imagem {
+  border-radius: 50%;
+  object-fit: cover;
 }
 .button_loggout {
   background: var(--tertiary-color);
@@ -117,7 +124,7 @@ const loggout = () => {
   filter: brightness(0.8);
 }
 .list_especies {
-  max-height: 400px;
+  max-height: 300px;
   overflow: auto;
 }
 </style>

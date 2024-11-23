@@ -50,6 +50,11 @@
                   @change="convertImageToBase64"
                 ></v-file-input>
 
+                <!-- Pré-visualização da imagem -->
+                <div v-if="especie.imagemBase64" class="image-preview">
+                  <img :src="especie.imagemBase64" alt="Pré-visualização da imagem" />
+                </div>
+
                 <!-- Botão para salvar -->
                 <v-btn type="submit" color="green-darken-2" block class="mt-4">
                   Salvar Espécie
@@ -109,8 +114,8 @@ const validateImageSize = (v) => {
   return true
 }
 
-const convertImageToBase64 = () => {
-  const file = especie.value.imagem
+const convertImageToBase64 = (event) => {
+  const file = event.target.files[0]
   if (file && file.size < 2000000) {
     const reader = new FileReader()
     reader.onloadend = () => {
@@ -120,11 +125,9 @@ const convertImageToBase64 = () => {
   } else {
     especie.value.imagemBase64 = false
   }
-
 }
 
 const handleSubmit = async () => {
-  let left = this
   if (especie.value.nome_cientifico && especie.value.descricao && especie.value.imagemBase64) {
     try {
       let res = await endpoints.cadastrarEspecie({
@@ -189,5 +192,16 @@ const loggout = () => {
 
 .form_cadEspecie .v-text-field {
   margin: 0 0 15px;
+}
+
+.image-preview {
+  margin-top: 10px;
+  text-align: center;
+}
+.image-preview img {
+  max-width: 100%;
+  max-height: 200px;
+  height: auto;
+  border-radius: 8px;
 }
 </style>
