@@ -73,7 +73,7 @@ const goToIncluirEspecie = () => {
 
 const goToEditarEspecie = (id) => {
   // Redireciona para a tela de edição da espécie
-  this.$router.push(`/editar-especie/${id}`)
+  router.push(`/editarEspecie/${id}`)
 }
 
 const excluirEspecie = async (id) => { 

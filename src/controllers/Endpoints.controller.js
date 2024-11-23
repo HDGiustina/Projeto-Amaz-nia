@@ -57,7 +57,31 @@ const endpoints = {
         .catch(() => {
             return false;
         });
-    }
+    },
+
+    async getOneEspecie(id){
+        return await api.get('/especies/' + id)
+        .then((response) => {
+            if (response.data) {
+                return response.data.data
+            }
+        })
+        .catch(() => {
+            return false;
+        });
+    },
+
+    async editOneEspecie(id, params){
+        return await api.put('/especies/' + id, params)
+        .then((response) => {
+            if (response.data) {
+                return response.data.data
+            }
+        })
+        .catch(() => {
+            return false;
+        });
+    },
 }
 
 

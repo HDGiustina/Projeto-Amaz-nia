@@ -18,6 +18,13 @@ const routes = [
     name: 'CadastraEspecie',
     component: () => import('@/views/CadastraEspecie.vue'),
   },
+  {
+    path: '/editarEspecie/:id',
+    params: true,
+    props: true,
+    name: 'EditarEspecie',
+    component: () => import('@/views/EditarEspecie.vue'),
+  },
 ];
 
 const router = createRouter({

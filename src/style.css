@@ -2,6 +2,9 @@
     --primary-color: #8CE492;
     --secondary-color: #202020;
     --tertiary-color: #8CE49247;
+
+    --dark-color: #2ab434;
+
 }
 
 ::-webkit-scrollbar {
