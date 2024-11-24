@@ -121,12 +121,27 @@
                       </v-btn>
                     </v-form>
                   </v-tabs-window-item>
+
                   <!-- Ocorrência Natural -->
-                  <v-tabs-window-item class="mt-5" :key="4">
-                    <v-form @submit.prevent="handleSubmitOcorrenciaNatural" class="form_ocorrenciaNatural">
+                  <v-tabs-window-item class="mt-5"  :key="4">
+                    <Loading :loading="loading" />
+
+                    <v-form v-if="!loading" @submit.prevent="handleSubmitOcorrenciaNatural" class="form_ocorrenciaNatural">
                       <v-text-field v-model="ocorrenciaNatural.latitudes" label="Latitudes" variant="outlined"></v-text-field>
                       <v-text-field v-model="ocorrenciaNatural.variacao_altitudinal" label="Variação Altitudinal" variant="outlined"></v-text-field>
-                      <v-textarea v-model="ocorrenciaNatural.mapa_imagem" label="Mapa e Imagem" variant="outlined"></v-textarea>
+                      <v-file-input
+                        v-model="ocorrenciaNatural.mapa_imagem"
+                        :rules="[v => !!v || 'Imagem é obrigatória', validateImageSize]"
+                        :label="ocorrenciaNatural.mapaImagemBase64 ? 'Trocar mapa' :'Mapa'"
+                        variant="outlined"
+                        prepend-icon="mdi-image"
+                        accept="image/*"
+                        required
+                        @change="convertMapaToBase64"
+                      ></v-file-input>
+                      <div v-if="ocorrenciaNatural.mapaImagemBase64" class="image-preview">
+                        <img :src="ocorrenciaNatural.mapaImagemBase64" alt="Pré-visualização da imagem do mapa" />
+                      </div>
                       <v-btn type="submit" color="green-darken-2" block class="mt-4">
                         Salvar Ocorrência Natural
                       </v-btn>
@@ -327,7 +342,7 @@ const especie = ref({
 const taxonomia = ref({})
 const descricaoBotanica = ref({})
 const biologiaReprodutiva = ref({})
-const ocorrenciaNatural = ref({})
+const ocorrenciaNatural = ref({ latitudes: '', variacao_altitudinal: '', mapa_imagem: null, mapaImagemBase64: ''})
 const aspectosEcologicos = ref({})
 const produtosUtilizacoes = ref({})
 const composicaoBiotecnologica = ref({})
@@ -393,6 +408,22 @@ const atualizaBioReprodutiva = async () => {
 }
 
 // Ocorrencia
+const atualizaOcorrencianatural = async () => {
+    loading.value = true; 
+    ocorrenciaNatural.value = false
+    let res = await endpoints.getCaracteristica(id, 'ocorrencias-naturais');
+    if(res){
+      ocorrenciaNatural.value = res
+      if (ocorrenciaNatural.value.mapa_imagem) {
+        ocorrenciaNatural.value.mapaImagemBase64 = ocorrenciaNatural.value.mapa_imagem;
+      }
+      ocorrenciaNatural.value.mapa_imagem = null
+    }
+    console.log(ocorrenciaNatural.value)
+    setTimeout(() => {
+      loading.value = false; 
+    }, 1000);
+}
 
 const atualizaAspEcológico = async () => {
     loading.value = true; 
@@ -476,6 +507,7 @@ setTimeout(async () => {
     atualizaTaxonomia()
     atualizaDescBotanica()
     atualizaBioReprodutiva()
+    atualizaOcorrencianatural()
     atualizaAspEcológico()
     atualizaProdEUtil()
     atualizaCompBio()
@@ -505,6 +537,19 @@ const convertImageToBase64 = (event) => {
     especie.value.imagemBase64 = ''
   }
 }
+
+const convertMapaToBase64 = (event) => {
+  const file = event.target.files[0];
+  if (file && file.size < 2000000) {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      ocorrenciaNatural.value.mapaImagemBase64 = reader.result;
+    };
+    reader.readAsDataURL(file);
+  } else {
+    ocorrenciaNatural.value.mapaImagemBase64 = '';
+  }
+};
 
 const convertAnexoToBase64 = (event) => {
   const file = event.target.files[0]
@@ -629,7 +674,42 @@ const handleSubmitBiologiaReprodutiva = async () => {
   }, 1000);
 }
 
-const handleSubmitOcorrenciaNatural = async () => { /* ... */ }
+const handleSubmitOcorrenciaNatural = async () => {
+  loading.value = true; 
+  try {
+    let res = false
+
+    if(ocorrenciaNatural.value.id){
+      res = await endpoints.cadastrarCaracteristica('ocorrencias-naturais', {
+        latitudes: ocorrenciaNatural.value.latitudes,
+        variacao_altitudinal: ocorrenciaNatural.value.variacao_altitudinal,
+        mapa_imagem: ocorrenciaNatural.value.mapaImagemBase64
+      }, id, true);
+    } else {
+      res = await endpoints.cadastrarCaracteristica('ocorrencias-naturais', {
+        latitudes: ocorrenciaNatural.value.latitudes,
+        variacao_altitudinal: ocorrenciaNatural.value.variacao_altitudinal,
+        mapa_imagem: ocorrenciaNatural.value.mapaImagemBase64,
+        especie_id: id
+      });
+    }
+
+    if (res) {
+      snackbar.value.text = 'Ocorrência Natural editada com sucesso!';
+      snackbar.value.color = 'success';
+      snackbar.value.show = true;
+    } 
+    atualizaOcorrencianatural()
+  } catch (error) {
+    snackbar.value.text = 'Erro ao editadar Ocorrência Natural';
+    snackbar.value.color = 'error';
+    snackbar.value.show = true;
+    console.error("Erro ao editadar Ocorrência Natural:", error);
+  }
+  setTimeout(() => {
+    loading.value = false; 
+  }, 1000);
+};
 
 const handleSubmitAspectosEcologicos = async () => { 
   loading.value = true; 
@@ -637,7 +717,6 @@ const handleSubmitAspectosEcologicos = async () => {
     let res = false
     if(aspectosEcologicos.value.id){
       res = await endpoints.cadastrarCaracteristica('aspectos-ecologicos', aspectosEcologicos.value, id, true)
-
     } else {
       res = await endpoints.cadastrarCaracteristica('aspectos-ecologicos', {...aspectosEcologicos.value, especie_id: id})
     }

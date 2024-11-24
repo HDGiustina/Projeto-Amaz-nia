@@ -99,8 +99,10 @@ const endpoints = {
         if(edit){
             return await api.put('/' + url + '/' + id, dados)
             .then((response) => {
-                if (response.data) {
+                if (response.data.data) {
                     return response.data.data
+                } else {
+                    return false
                 }
             })
             .catch(() => {
