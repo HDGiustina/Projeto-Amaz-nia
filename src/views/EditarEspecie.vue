@@ -64,7 +64,9 @@
                   </v-tabs-window-item>
                   <!-- Taxonomia -->
                   <v-tabs-window-item class="mt-5" :key="1">
-                    <v-form @submit.prevent="handleSubmitTaxonomia" class="form_taxonomia">
+                    <Loading :loading="loading" />
+
+                    <v-form v-if="!loading" @submit.prevent="handleSubmitTaxonomia" class="form_taxonomia">
                       <v-text-field v-model="taxonomia.divisao" label="Divisão" variant="outlined"></v-text-field>
                       <v-text-field v-model="taxonomia.clado" label="Clado" variant="outlined"></v-text-field>
                       <v-text-field v-model="taxonomia.ordem" label="Ordem" variant="outlined"></v-text-field>
@@ -335,13 +337,25 @@ const atualizaEspecie = async () => {
     }, 1000);
 }
 
+const atualizaTaxonomia = async () => {
+    loading.value = true; 
+    let res = await endpoints.getTaxonomia(id);
+    if(res){
+      taxonomia.value = res
+    }
+    setTimeout(() => {
+      loading.value = false; 
+    }, 1000);
+}
+
 setTimeout(async () => {
     atualizaEspecie()
+    atualizaTaxonomia()
 }, 100)
 
 // Funções de validação
 const validateImageSize = (v) => {
-  if (!v) return 'Imagem é obrigatória'
+  if (!v[0]) return 'Imagem é obrigatória'
   if (v[0].size > 2000000) return `A imagem deve ser menor que 2MB`
   return true
 }
@@ -403,12 +417,20 @@ const handleSubmitEspecie = async () => {
 }
 
 const handleSubmitTaxonomia = async () => {
+  loading.value = true; 
   try {
-    let res = await endpoints.cadastrarTaxonomia(taxonomia.value)
+    let res = false
+    if(taxonomia.value.id){
+      res = await endpoints.cadastrarTaxonomias(taxonomia.value, id, true)
+
+    } else {
+      res = await endpoints.cadastrarTaxonomias({...taxonomia.value, especie_id: id})
+    }
     if (res) {
       snackbar.value.text = 'Taxonomia editada com sucesso!';
       snackbar.value.color = 'success';
       snackbar.value.show = true;
+      atualizaTaxonomia()
     }
   } catch (error) {
     snackbar.value.text = 'Erro ao editar taxonomia';
@@ -416,6 +438,9 @@ const handleSubmitTaxonomia = async () => {
     snackbar.value.show = true;
     console.error("Erro ao cadastrar taxonomia:", error)
   }
+  setTimeout(() => {
+    loading.value = false; 
+  }, 1000);
 }
 
 // Adicione as demais funções de submissão de forma similar

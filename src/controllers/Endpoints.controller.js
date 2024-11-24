@@ -82,6 +82,42 @@ const endpoints = {
             return false;
         });
     },
+
+    async getTaxonomia(id){
+        return await api.get('/taxonomias/especie/' + id)
+        .then((response) => {
+            if (response.data) {
+                return response.data.data
+            }
+        })
+        .catch(() => {
+            return false;
+        });
+    },
+
+    async cadastrarTaxonomias(dados, id = false,  edit = false){
+        if(edit){
+            return await api.put('/taxonomias/' + id, dados)
+            .then((response) => {
+                if (response.data) {
+                    return response.data.data
+                }
+            })
+            .catch(() => {
+                return false;
+            });
+        } else {
+            return await api.post('/taxonomias',dados)
+            .then((response) => {
+                if (response.data) {
+                    return response.data.data
+                }
+            })
+            .catch(() => {
+                return false;
+            });
+        }
+    },
 }
 
 
