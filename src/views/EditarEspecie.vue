@@ -88,7 +88,9 @@
                   </v-tabs-window-item>
                   <!-- Descrição Botânica -->
                   <v-tabs-window-item class="mt-5" :key="2">
-                    <v-form @submit.prevent="handleSubmitDescricaoBotanica" class="form_descricaoBotanica">
+                    <Loading :loading="loading" />
+
+                    <v-form v-if="!loading" @submit.prevent="handleSubmitDescricaoBotanica" class="form_descricaoBotanica">
                       <v-textarea v-model="descricaoBotanica.forma_biologica_foliacao" label="Forma Biológica e Foliacão" variant="outlined"></v-textarea>
                       <v-textarea v-model="descricaoBotanica.tronco" label="Tronco" variant="outlined"></v-textarea>
                       <v-textarea v-model="descricaoBotanica.ramificacao" label="Ramificação" variant="outlined"></v-textarea>
@@ -103,9 +105,11 @@
                       </v-btn>
                     </v-form>
                   </v-tabs-window-item>
+
                   <!-- Biologia Reprodutiva -->
                   <v-tabs-window-item class="mt-5" :key="3">
-                    <v-form @submit.prevent="handleSubmitBiologiaReprodutiva" class="form_biologiaReprodutiva">
+                    <Loading :loading="loading" />
+                    <v-form v-if="!loading" @submit.prevent="handleSubmitBiologiaReprodutiva" class="form_biologiaReprodutiva">
                       <v-text-field v-model="biologiaReprodutiva.sistema_sexual" label="Sistema Sexual" variant="outlined"></v-text-field>
                       <v-text-field v-model="biologiaReprodutiva.vetor_polinizacao" label="Vetor de Polinização" variant="outlined"></v-text-field>
                       <v-textarea v-model="biologiaReprodutiva.floracao" label="Floração" variant="outlined"></v-textarea>
@@ -130,7 +134,9 @@
                   </v-tabs-window-item>
                                   <!-- Aspectos Ecológicos -->
                 <v-tabs-window-item class="mt-5" :key="5">
-                  <v-form @submit.prevent="handleSubmitAspectosEcologicos" class="form_aspectosEcologicos">
+                  <Loading :loading="loading" />
+
+                  <v-form v-if="!loading" @submit.prevent="handleSubmitAspectosEcologicos" class="form_aspectosEcologicos">
                     <v-text-field v-model="aspectosEcologicos.grupo_sucessional" label="Grupo Sucessional" variant="outlined"></v-text-field>
                     <v-textarea v-model="aspectosEcologicos.importancia_sociologica" label="Importância Sociológica" variant="outlined"></v-textarea>
                     <v-textarea v-model="aspectosEcologicos.regeneracao_natural" label="Regeneração Natural" variant="outlined"></v-textarea>
@@ -141,7 +147,9 @@
                 </v-tabs-window-item>
                 <!-- Produtos e Utilizações -->
                 <v-tabs-window-item class="mt-5" :key="6">
-                  <v-form @submit.prevent="handleSubmitProdutosUtilizacoes" class="form_produtosUtilizacoes">
+                  <Loading :loading="loading" />
+
+                  <v-form v-if="!loading" @submit.prevent="handleSubmitProdutosUtilizacoes" class="form_produtosUtilizacoes">
                     <v-textarea v-model="produtosUtilizacoes.aproveitamento_alimentar" label="Aproveitamento Alimentar" variant="outlined"></v-textarea>
                     <v-textarea v-model="produtosUtilizacoes.apicola" label="Apícola" variant="outlined"></v-textarea>
                     <v-textarea v-model="produtosUtilizacoes.celulose_papel" label="Celulose e Papel" variant="outlined"></v-textarea>
@@ -159,9 +167,11 @@
                 </v-tabs-window-item>
                 <!-- Composição Biotecnológica -->
                 <v-tabs-window-item class="mt-5" :key="7">
-                  <v-form @submit.prevent="handleSubmitComposicaoBiotecnologica" class="form_composicaoBiotecnologica">
-                    <v-text-field v-model="composicaoBiotecnologica.variacao_carboidratos" label="Variação de Carboidratos" type="number" variant="outlined"></v-text-field>
-                    <v-text-field v-model="composicaoBiotecnologica.variacao_proteinas" label="Variação de Proteínas" type="number" variant="outlined"></v-text-field>
+                  <Loading :loading="loading" />
+
+                  <v-form v-if="!loading" @submit.prevent="handleSubmitComposicaoBiotecnologica" class="form_composicaoBiotecnologica">
+                    <v-text-field v-model="composicaoBiotecnologica.variacao_carboidratos" label="Variação de Carboidratos" type="text" variant="outlined"></v-text-field>
+                    <v-text-field v-model="composicaoBiotecnologica.variacao_proteinas" label="Variação de Proteínas" type="text" variant="outlined"></v-text-field>
                     <v-textarea v-model="composicaoBiotecnologica.grupo_substancias" label="Grupo de Substâncias" variant="outlined"></v-textarea>
                     <v-textarea v-model="composicaoBiotecnologica.levantamento_bibliografico" label="Levantamento Bibliográfico" variant="outlined"></v-textarea>
                     <v-textarea v-model="composicaoBiotecnologica.biofertilizante" label="Biofertilizante" variant="outlined"></v-textarea>
@@ -170,9 +180,12 @@
                     </v-btn>
                   </v-form>
                 </v-tabs-window-item>
+
                 <!-- Cultivo em Viveiros -->
                 <v-tabs-window-item class="mt-5" :key="8">
-                  <v-form @submit.prevent="handleSubmitCultivoViveiros" class="form_cultivoViveiros">
+                  <Loading :loading="loading" />
+
+                  <v-form v-if="!loading" @submit.prevent="handleSubmitCultivoViveiros" class="form_cultivoViveiros">
                     <v-textarea v-model="cultivoViveiros.implantacao_viveiros" label="Implantação de Viveiros" variant="outlined"></v-textarea>
                     <v-textarea v-model="cultivoViveiros.caracteristicas_silviculturais" label="Características Silviculturais" variant="outlined"></v-textarea>
                     <v-textarea v-model="cultivoViveiros.habito" label="Hábito" variant="outlined"></v-textarea>
@@ -190,7 +203,9 @@
                 </v-tabs-window-item>
                 <!-- Produção de Mudas -->
                 <v-tabs-window-item class="mt-5" :key="9">
-                  <v-form @submit.prevent="handleSubmitProducaoMudas" class="form_producaoMudas">
+                  <Loading :loading="loading" />
+
+                  <v-form v-if="!loading" @submit.prevent="handleSubmitProducaoMudas" class="form_producaoMudas">
                     <v-textarea v-model="producaoMudas.semeadura" label="Semeadura" variant="outlined"></v-textarea>
                     <v-textarea v-model="producaoMudas.germinacao" label="Germinação" variant="outlined"></v-textarea>
                     <v-textarea v-model="producaoMudas.associacao_simbiotica" label="Associação Simbiótica" variant="outlined"></v-textarea>
@@ -200,24 +215,31 @@
                     </v-btn>
                   </v-form>
                 </v-tabs-window-item>
+
                 <!-- Pragas -->
                 <v-tabs-window-item class="mt-5" :key="10">
-                  <v-form @submit.prevent="handleSubmitPragas" class="form_pragas">
+                  <Loading :loading="loading" />
+
+                  <v-form v-if="!loading" @submit.prevent="handleSubmitPragas" class="form_pragas">
                     <v-textarea v-model="pragas.descricao" label="Descrição" variant="outlined"></v-textarea>
                     <v-btn type="submit" color="green-darken-2" block class="mt-4">
                       Salvar Pragas
                     </v-btn>
                   </v-form>
                 </v-tabs-window-item>
+
                 <!-- Solos -->
                 <v-tabs-window-item class="mt-5" :key="11">
-                  <v-form @submit.prevent="handleSubmitSolos" class="form_solos">
+                  <Loading :loading="loading" />
+
+                  <v-form v-if="!loading" @submit.prevent="handleSubmitSolos" class="form_solos">
                     <v-textarea v-model="solos.descricao" label="Descrição" variant="outlined"></v-textarea>
                     <v-btn type="submit" color="green-darken-2" block class="mt-4">
                       Salvar Solos
                     </v-btn>
                   </v-form>
                 </v-tabs-window-item>
+
                 <!-- Anexos -->
                 <v-tabs-window-item class="mt-5" :key="12">
                   <v-form @submit.prevent="handleSubmitAnexos" class="form_anexos">
@@ -339,9 +361,110 @@ const atualizaEspecie = async () => {
 
 const atualizaTaxonomia = async () => {
     loading.value = true; 
-    let res = await endpoints.getTaxonomia(id);
+    let res = await endpoints.getCaracteristica(id, 'taxonomias');
     if(res){
       taxonomia.value = res
+    }
+    setTimeout(() => {
+      loading.value = false; 
+    }, 1000);
+}
+
+const atualizaDescBotanica = async () => {
+    loading.value = true; 
+    let res = await endpoints.getCaracteristica(id, 'descricoes-botanicas');
+    if(res){
+      descricaoBotanica.value = res
+    }
+    setTimeout(() => {
+      loading.value = false; 
+    }, 1000);
+}
+
+const atualizaBioReprodutiva = async () => {
+    loading.value = true; 
+    let res = await endpoints.getCaracteristica(id, 'biologias-reprodutivas');
+    if(res){
+      biologiaReprodutiva.value = res
+    }
+    setTimeout(() => {
+      loading.value = false; 
+    }, 1000);
+}
+
+// Ocorrencia
+
+const atualizaAspEcológico = async () => {
+    loading.value = true; 
+    let res = await endpoints.getCaracteristica(id, 'aspectos-ecologicos');
+    if(res){
+      aspectosEcologicos.value = res
+    }
+    setTimeout(() => {
+      loading.value = false; 
+    }, 1000);
+}
+
+const atualizaProdEUtil= async () => {
+    loading.value = true; 
+    let res = await endpoints.getCaracteristica(id, 'produtos-utilizacoes');
+    if(res){
+      produtosUtilizacoes.value = res
+    }
+    setTimeout(() => {
+      loading.value = false; 
+    }, 1000);
+}
+
+const atualizaCompBio= async () => {
+    loading.value = true; 
+    let res = await endpoints.getCaracteristica(id, 'composicoes-biotecnologicas');
+    if(res){
+      composicaoBiotecnologica.value = res
+    }
+    setTimeout(() => {
+      loading.value = false; 
+    }, 1000);
+}
+
+const atualizaCultivo= async () => {
+    loading.value = true; 
+    let res = await endpoints.getCaracteristica(id, 'cultivos-viveiros');
+    if(res){
+      cultivoViveiros.value = res
+    }
+    setTimeout(() => {
+      loading.value = false; 
+    }, 1000);
+}
+
+const atualizaProdMudas= async () => {
+    loading.value = true; 
+    let res = await endpoints.getCaracteristica(id, 'prodcoes-mudas');
+    if(res){
+      producaoMudas.value = res
+    }
+    setTimeout(() => {
+      loading.value = false; 
+    }, 1000);
+}
+
+const atualizaPragas= async () => {
+    loading.value = true; 
+    let res = await endpoints.getCaracteristica(id, 'pragas');
+    if(res){
+      pragas.value = res
+    }
+    setTimeout(() => {
+      loading.value = false; 
+    }, 1000);
+}
+
+const atualizaSolos= async () => {
+    loading.value = true; 
+    let res = await endpoints.getCaracteristica(id, 'solos');
+    if(res){
+      solos.value = res
     }
     setTimeout(() => {
       loading.value = false; 
@@ -351,6 +474,15 @@ const atualizaTaxonomia = async () => {
 setTimeout(async () => {
     atualizaEspecie()
     atualizaTaxonomia()
+    atualizaDescBotanica()
+    atualizaBioReprodutiva()
+    atualizaAspEcológico()
+    atualizaProdEUtil()
+    atualizaCompBio()
+    atualizaCultivo()
+    atualizaProdMudas()
+    atualizaPragas()
+    atualizaSolos()
 }, 100)
 
 // Funções de validação
@@ -421,10 +553,10 @@ const handleSubmitTaxonomia = async () => {
   try {
     let res = false
     if(taxonomia.value.id){
-      res = await endpoints.cadastrarTaxonomias(taxonomia.value, id, true)
+      res = await endpoints.cadastrarCaracteristica('taxonomias',taxonomia.value, id, true)
 
     } else {
-      res = await endpoints.cadastrarTaxonomias({...taxonomia.value, especie_id: id})
+      res = await endpoints.cadastrarCaracteristica('taxonomias',{...taxonomia.value, especie_id: id})
     }
     if (res) {
       snackbar.value.text = 'Taxonomia editada com sucesso!';
@@ -443,17 +575,251 @@ const handleSubmitTaxonomia = async () => {
   }, 1000);
 }
 
-// Adicione as demais funções de submissão de forma similar
-const handleSubmitDescricaoBotanica = async () => { /* ... */ }
-const handleSubmitBiologiaReprodutiva = async () => { /* ... */ }
+const handleSubmitDescricaoBotanica = async () => {
+  loading.value = true; 
+  try {
+    let res = false
+    if(descricaoBotanica.value.id){
+      res = await endpoints.cadastrarCaracteristica('descricoes-botanicas', descricaoBotanica.value, id, true)
+
+    } else {
+      res = await endpoints.cadastrarCaracteristica('descricoes-botanicas', {...descricaoBotanica.value, especie_id: id})
+    }
+    if (res) {
+      snackbar.value.text = 'Descrição botânica editada com sucesso!';
+      snackbar.value.color = 'success';
+      snackbar.value.show = true;
+      atualizaDescBotanica()
+    }
+  } catch (error) {
+    snackbar.value.text = 'Erro ao editar descrição botânica';
+    snackbar.value.color = 'error';
+    snackbar.value.show = true;
+    console.error("Erro ao cadastrar descrição botânica:", error)
+  }
+  setTimeout(() => {
+    loading.value = false; 
+  }, 1000);
+}
+
+const handleSubmitBiologiaReprodutiva = async () => {
+  loading.value = true; 
+  try {
+    let res = false
+    if(biologiaReprodutiva.value.id){
+      res = await endpoints.cadastrarCaracteristica('biologias-reprodutivas', biologiaReprodutiva.value, id, true)
+
+    } else {
+      res = await endpoints.cadastrarCaracteristica('biologias-reprodutivas', {...biologiaReprodutiva.value, especie_id: id})
+    }
+    if (res) {
+      snackbar.value.text = 'Biologia reprodutiva editada com sucesso!';
+      snackbar.value.color = 'success';
+      snackbar.value.show = true;
+      atualizaBioReprodutiva()
+    }
+  } catch (error) {
+    snackbar.value.text = 'Erro ao editar biologia reprodutiva';
+    snackbar.value.color = 'error';
+    snackbar.value.show = true;
+    console.error("Erro ao cadastrar biologia reprodutiva:", error)
+  }
+  setTimeout(() => {
+    loading.value = false; 
+  }, 1000);
+}
+
 const handleSubmitOcorrenciaNatural = async () => { /* ... */ }
-const handleSubmitAspectosEcologicos = async () => { /* ... */ }
-const handleSubmitProdutosUtilizacoes = async () => { /* ... */ }
-const handleSubmitComposicaoBiotecnologica = async () => { /* ... */ }
-const handleSubmitCultivoViveiros = async () => { /* ... */ }
-const handleSubmitProducaoMudas = async () => { /* ... */ }
-const handleSubmitPragas = async () => { /* ... */ }
-const handleSubmitSolos = async () => { /* ... */ }
+
+const handleSubmitAspectosEcologicos = async () => { 
+  loading.value = true; 
+  try {
+    let res = false
+    if(aspectosEcologicos.value.id){
+      res = await endpoints.cadastrarCaracteristica('aspectos-ecologicos', aspectosEcologicos.value, id, true)
+
+    } else {
+      res = await endpoints.cadastrarCaracteristica('aspectos-ecologicos', {...aspectosEcologicos.value, especie_id: id})
+    }
+    if (res) {
+      snackbar.value.text = 'Aspectos ecológicos editado com sucesso!';
+      snackbar.value.color = 'success';
+      snackbar.value.show = true;
+      atualizaAspEcológico()
+    }
+  } catch (error) {
+    snackbar.value.text = 'Erro ao editar aspectos ecológicos';
+    snackbar.value.color = 'error';
+    snackbar.value.show = true;
+    console.error("Erro ao cadastrar aspectos ecológicos:", error)
+  }
+  setTimeout(() => {
+    loading.value = false; 
+  }, 1000);
+}
+
+const handleSubmitProdutosUtilizacoes = async () => {
+  loading.value = true; 
+  try {
+    let res = false
+    if(produtosUtilizacoes.value.id){
+      res = await endpoints.cadastrarCaracteristica('produtos-utilizacoes', produtosUtilizacoes.value, id, true)
+
+    } else {
+      res = await endpoints.cadastrarCaracteristica('produtos-utilizacoes', {...produtosUtilizacoes.value, especie_id: id})
+    }
+    if (res) {
+      snackbar.value.text = 'Produtos e utilizações editado com sucesso!';
+      snackbar.value.color = 'success';
+      snackbar.value.show = true;
+      atualizaProdEUtil()
+    }
+  } catch (error) {
+    snackbar.value.text = 'Erro ao editar produtos e utilizações';
+    snackbar.value.color = 'error';
+    snackbar.value.show = true;
+    console.error("Erro ao cadastrar produtos e utilizações:", error)
+  }
+  setTimeout(() => {
+    loading.value = false; 
+  }, 1000);
+}
+
+const handleSubmitComposicaoBiotecnologica = async () => {
+  loading.value = true; 
+  try {
+    let res = false
+    if(composicaoBiotecnologica.value.id){
+      res = await endpoints.cadastrarCaracteristica('composicoes-biotecnologicas', composicaoBiotecnologica.value, id, true)
+
+    } else {
+      res = await endpoints.cadastrarCaracteristica('composicoes-biotecnologicas', {...composicaoBiotecnologica.value, especie_id: id})
+    }
+    if (res) {
+      snackbar.value.text = 'Composição biotecnológica  editado com sucesso!';
+      snackbar.value.color = 'success';
+      snackbar.value.show = true;
+      atualizaCompBio()
+    }
+  } catch (error) {
+    snackbar.value.text = 'Erro ao editar composição biotecnológica ';
+    snackbar.value.color = 'error';
+    snackbar.value.show = true;
+    console.error("Erro ao cadastrar composição biotecnológica:", error)
+  }
+  setTimeout(() => {
+    loading.value = false; 
+  }, 1000);
+}
+
+const handleSubmitCultivoViveiros = async () => {
+  loading.value = true; 
+  try {
+    let res = false
+    if(cultivoViveiros.value.id){
+      res = await endpoints.cadastrarCaracteristica('cultivos-viveiros', cultivoViveiros.value, id, true)
+
+    } else {
+      res = await endpoints.cadastrarCaracteristica('cultivos-viveiros', {...cultivoViveiros.value, especie_id: id})
+    }
+    if (res) {
+      snackbar.value.text = 'Cultivos em viveros editado com sucesso!';
+      snackbar.value.color = 'success';
+      snackbar.value.show = true;
+      atualizaCultivo()
+    }
+  } catch (error) {
+    snackbar.value.text = 'Erro ao editar Cultivos em viveros ';
+    snackbar.value.color = 'error';
+    snackbar.value.show = true;
+    console.error("Erro ao cadastrar Cultivos em viveros:", error)
+  }
+  setTimeout(() => {
+    loading.value = false; 
+  }, 1000);
+}
+
+const handleSubmitProducaoMudas = async () => {
+  loading.value = true; 
+  try {
+    let res = false
+    if(producaoMudas.value.id){
+      res = await endpoints.cadastrarCaracteristica('prodcoes-mudas', producaoMudas.value, id, true)
+
+    } else {
+      res = await endpoints.cadastrarCaracteristica('prodcoes-mudas', {...producaoMudas.value, especie_id: id})
+    }
+    if (res) {
+      snackbar.value.text = 'Produção de mudas editado com sucesso!';
+      snackbar.value.color = 'success';
+      snackbar.value.show = true;
+      atualizaProdMudas()
+    }
+  } catch (error) {
+    snackbar.value.text = 'Erro ao editar produção de mudas ';
+    snackbar.value.color = 'error';
+    snackbar.value.show = true;
+    console.error("Erro ao cadastrar produção de mudas:", error)
+  }
+  setTimeout(() => {
+    loading.value = false; 
+  }, 1000);
+}
+
+const handleSubmitPragas = async () => {
+  loading.value = true; 
+  try {
+    let res = false
+    if(pragas.value.id){
+      res = await endpoints.cadastrarCaracteristica('pragas', pragas.value, id, true)
+
+    } else {
+      res = await endpoints.cadastrarCaracteristica('pragas', {...pragas.value, especie_id: id})
+    }
+    if (res) {
+      snackbar.value.text = 'Pragas editada com sucesso!';
+      snackbar.value.color = 'success';
+      snackbar.value.show = true;
+      atualizaPragas()
+    }
+  } catch (error) {
+    snackbar.value.text = 'Erro ao editar pragas ';
+    snackbar.value.color = 'error';
+    snackbar.value.show = true;
+    console.error("Erro ao cadastrar pragas:", error)
+  }
+  setTimeout(() => {
+    loading.value = false; 
+  }, 1000);
+}
+
+const handleSubmitSolos = async () => {
+  loading.value = true; 
+  try {
+    let res = false
+    if(solos.value.id){
+      res = await endpoints.cadastrarCaracteristica('solos', solos.value, id, true)
+
+    } else {
+      res = await endpoints.cadastrarCaracteristica('solos', {...solos.value, especie_id: id})
+    }
+    if (res) {
+      snackbar.value.text = 'Solos editado com sucesso!';
+      snackbar.value.color = 'success';
+      snackbar.value.show = true;
+      atualizaSolos()
+    }
+  } catch (error) {
+    snackbar.value.text = 'Erro ao editar solos ';
+    snackbar.value.color = 'error';
+    snackbar.value.show = true;
+    console.error("Erro ao cadastrar solos:", error)
+  }
+  setTimeout(() => {
+    loading.value = false; 
+  }, 1000);
+}
+
 const handleSubmitAnexos = async () => {
   if (anexos.value.imagemBase64 && anexos.value.legenda) {
     try {

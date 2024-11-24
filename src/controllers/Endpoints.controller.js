@@ -83,8 +83,8 @@ const endpoints = {
         });
     },
 
-    async getTaxonomia(id){
-        return await api.get('/taxonomias/especie/' + id)
+    async getCaracteristica(id, url){
+        return await api.get('/'+ url +'/especie/' + id)
         .then((response) => {
             if (response.data) {
                 return response.data.data
@@ -95,9 +95,9 @@ const endpoints = {
         });
     },
 
-    async cadastrarTaxonomias(dados, id = false,  edit = false){
+    async cadastrarCaracteristica(url, dados, id = false,  edit = false){
         if(edit){
-            return await api.put('/taxonomias/' + id, dados)
+            return await api.put('/' + url + '/' + id, dados)
             .then((response) => {
                 if (response.data) {
                     return response.data.data
@@ -107,7 +107,7 @@ const endpoints = {
                 return false;
             });
         } else {
-            return await api.post('/taxonomias',dados)
+            return await api.post('/' + url + '',dados)
             .then((response) => {
                 if (response.data) {
                     return response.data.data
