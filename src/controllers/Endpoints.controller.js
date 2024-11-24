@@ -120,6 +120,30 @@ const endpoints = {
             });
         }
     },
+
+    async deleteAnexo(id){
+        return await api.delete('/anexos/' + id)
+        .then((response) => {
+            if (response.data) {
+                return response.data.data
+            }
+        })
+        .catch(() => {
+            return false;
+        });
+    },
+
+    async getAnexos(id, url){
+        return await api.get('/'+ url )
+        .then((response) => {
+            if (response.data) {
+                return response.data.data
+            }
+        })
+        .catch(() => {
+            return false;
+        });
+    },
 }
 
 

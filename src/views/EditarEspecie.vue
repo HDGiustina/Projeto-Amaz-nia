@@ -256,25 +256,40 @@
                 </v-tabs-window-item>
 
                 <!-- Anexos -->
-                <v-tabs-window-item class="mt-5" :key="12">
-                  <v-form @submit.prevent="handleSubmitAnexos" class="form_anexos">
-                    <v-file-input
-                      v-model="anexos.imagem"
-                      :rules="[v => !!v || 'Imagem é obrigatória', validateImageSize]"
-                      label="Imagem"
-                      variant="outlined"
-                      prepend-inner-icon="mdi-image"
-                      prepend-icon="mdi-camera"
-                      accept="image/*"
-                      required
-                      @change="convertAnexoToBase64"
-                    ></v-file-input>
-                    <v-text-field v-model="anexos.legenda" label="Legenda" variant="outlined"></v-text-field>
+                <v-tabs-window-item :key="12">
+                  <Loading :loading="loading" />
+                  
+                  <v-form v-if="!loading" @submit.prevent="handleSubmitAnexos" class="form_anexos">
+                    <div v-for="(anexo, index) in anexos" :key="index" class="mb-4">
+                      <v-file-input
+                        v-model="anexo.imagem"
+                        :rules="[v => !!v || 'Imagem é obrigatória', validateImageSize]"
+                        label="Imagem"
+                        variant="outlined"
+                        prepend-inner-icon="mdi-image"
+                        prepend-icon="mdi-camera"
+                        accept="image/*"
+                        required
+                        @change="event => convertAnexoToBase64(event, index)"
+                      ></v-file-input>
+                      <v-text-field v-model="anexo.legenda" label="Legenda" variant="outlined"></v-text-field>
+                      <v-btn color="red" @click="removeAnexo(index)">Remover</v-btn>
+                    </div>
+                    <v-btn color="blue" @click="addAnexo">Adicionar Anexo</v-btn>
                     <v-btn type="submit" color="green-darken-2" block class="mt-4">
-                      Salvar Anexo
+                      Salvar Anexos
                     </v-btn>
                   </v-form>
+
+                  <v-row v-for="(anexo, index) in anexosCadastrados" :key="index" class="my-2">
+                    <v-col cols="12" sm="6">
+                      <img :src="anexo.imagemBase64" alt="Imagem do anexo" class="img-thumbnail">
+                      <p>{{ anexo.legenda }}</p>
+                      <v-btn color="red" @click="deleteAnexo(anexo.id)">Excluir</v-btn>
+                    </v-col>
+                  </v-row>
                 </v-tabs-window-item>
+
               </v-tabs-window>
             </v-card-text>
         </v-card>
@@ -350,15 +365,24 @@ const cultivoViveiros = ref({})
 const producaoMudas = ref({})
 const pragas = ref({})
 const solos = ref({})
-const anexos = ref({
-  imagem: null,
-  imagemBase64: '',
-  legenda: ''
-})
+const anexos = ref([
+  { imagem: null, imagemBase64: '', legenda: '' }
+]);
+const anexosCadastrados = ref([]);
 const route = useRoute();
 const id = route.params.id; 
 const title = ref()
 const loading = ref(false); 
+
+const addAnexo = () => {
+  anexos.value.push({ imagem: null, imagemBase64: '', legenda: '' });
+};
+
+const removeAnexo = (index) => {
+  console.log(anexos.value[index])
+  deleteAnexo(anexos.value[index].id)
+  // anexos.value.splice(index, 1);
+};
 
 const atualizaEspecie = async () => {
     loading.value = true; 
@@ -502,6 +526,21 @@ const atualizaSolos= async () => {
     }, 1000);
 }
 
+const atualizaAnexos = async () => {
+  loading.value = true;
+  let res = await endpoints.getAnexos(id, 'anexos');
+  if (res) {
+    anexos.value = res.map(anexo => ({
+      ...anexo,
+      imagemBase64: anexo.imagem,
+      imagem: null
+    }));
+  }
+  setTimeout(() => {
+    loading.value = false;
+  }, 1000);
+};
+
 setTimeout(async () => {
     atualizaEspecie()
     atualizaTaxonomia()
@@ -515,6 +554,7 @@ setTimeout(async () => {
     atualizaProdMudas()
     atualizaPragas()
     atualizaSolos()
+    atualizaAnexos()
 }, 100)
 
 // Funções de validação
@@ -551,18 +591,18 @@ const convertMapaToBase64 = (event) => {
   }
 };
 
-const convertAnexoToBase64 = (event) => {
-  const file = event.target.files[0]
+const convertAnexoToBase64 = (event, index) => {
+  const file = event.target.files[0];
   if (file && file.size < 2000000) {
-    const reader = new FileReader()
+    const reader = new FileReader();
     reader.onloadend = () => {
-      anexos.value.imagemBase64 = reader.result
-    }
-    reader.readAsDataURL(file)
+      anexos.value[index].imagemBase64 = reader.result;
+    };
+    reader.readAsDataURL(file);
   } else {
-    anexos.value.imagemBase64 = ''
+    anexos.value[index].imagemBase64 = '';
   }
-}
+};
 
 // Funções de submissão dos formulários
 const handleSubmitEspecie = async () => {
@@ -900,27 +940,61 @@ const handleSubmitSolos = async () => {
 }
 
 const handleSubmitAnexos = async () => {
-  if (anexos.value.imagemBase64 && anexos.value.legenda) {
-    try {
-      let res = await endpoints.cadastrarAnexos(anexos.value)
-      if (res) {
-        snackbar.value.text = 'Anexo cadastrado com sucesso!';
-        snackbar.value.color = 'success';
-        snackbar.value.show = true;
+  loading.value = true;
+  try {
+    const requests = anexos.value.map(anexo => {
+      if (anexo.imagemBase64 && anexo.legenda) {
+        return endpoints.cadastrarCaracteristica('anexos', {
+          imagem: anexo.imagemBase64,
+          legenda: anexo.legenda,
+          especie_id: id
+        });
       }
-    } catch (error) {
-      snackbar.value.text = 'Erro ao cadastrar anexo';
-      snackbar.value.color = 'error';
+    });
+
+    const results = await Promise.all(requests);
+
+    const success = results.every(res => res);
+    if (success) {
+      snackbar.value.text = 'Anexos cadastrados com sucesso!';
+      snackbar.value.color = 'success';
       snackbar.value.show = true;
-      console.error("Erro ao cadastrar anexo:", error)
+    } else {
+      throw new Error('Falha ao cadastrar um ou mais anexos.');
     }
-  } else {
-    snackbar.value.text = 'Imagem e legenda são obrigatórias!';
-    snackbar.value.color = 'warning';
+    atualizaAnexos();
+  } catch (error) {
+    snackbar.value.text = 'Erro ao cadastrar anexos';
+    snackbar.value.color = 'error';
     snackbar.value.show = true;
-    console.error("Todos os campos são obrigatórios.")
+    console.error("Erro ao cadastrar anexos:", error);
   }
-}
+  setTimeout(() => {
+    loading.value = false;
+  }, 1000);
+};
+
+const deleteAnexo = async (anexoId) => {
+  loading.value = true;
+  try {
+    let res = await endpoints.deleteAnexo(anexoId);
+    if (res) {
+      snackbar.value.text = 'Anexo deletado com sucesso!';
+      snackbar.value.color = 'success';
+      snackbar.value.show = true;
+      atualizaAnexos();
+    }
+  } catch (error) {
+    snackbar.value.text = 'Erro ao deletar anexo';
+    snackbar.value.color = 'error';
+    snackbar.value.show = true;
+    console.error("Erro ao deletar anexo:", error);
+  }
+  setTimeout(() => {
+    loading.value = false;
+  }, 1000);
+};
+
 
 const goBack = () => {
   // Redireciona para a página anterior
