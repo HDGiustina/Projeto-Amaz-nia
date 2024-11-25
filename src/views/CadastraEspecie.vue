@@ -5,13 +5,17 @@
         <v-col cols="12" sm="8" md="6" lg="4">
           <v-card class="home-card" elevation="8">
             <!-- Logo, Nome da Empresa e Botão de Voltar -->
-            <div class="d-flex align-center justify-space-between pt-4 pl-4 pr-4">
+            <div
+              class="d-flex align-center justify-space-between pt-4 pl-4 pr-4"
+            >
               <div class="d-flex align-center">
-                <img src="@/assets/logo.png" alt="Logo do Site" height="40">
-                <h1 class="text-h5 font-weight-bold green-darken-2--text ml-2">TreeAnalytics</h1>
+                <img src="@/assets/logo.png" alt="Logo do Site" height="40" />
+                <h1 class="text-h5 font-weight-bold green-darken-2--text ml-2">
+                  TreeAnalytics
+                </h1>
               </div>
               <v-btn icon @click="goBack">
-                <img src="@/assets/icons/voltar.svg" alt="Voltar" height="25">
+                <img src="@/assets/icons/voltar.svg" alt="Voltar" height="25" />
               </v-btn>
             </div>
 
@@ -20,7 +24,7 @@
                 <!-- Campo para o nome da espécie -->
                 <v-text-field
                   v-model="especie.nome_cientifico"
-                  :rules="[v => !!v || 'Nome da Espécie é obrigatório']"
+                  :rules="[(v) => !!v || 'Nome da Espécie é obrigatório']"
                   label="Nome da Espécie"
                   variant="outlined"
                   prepend-inner-icon="mdi-leaf"
@@ -30,7 +34,7 @@
                 <!-- Campo para a descrição da espécie -->
                 <v-textarea
                   v-model="especie.descricao"
-                  :rules="[v => !!v || 'Descrição da Espécie é obrigatória']"
+                  :rules="[(v) => !!v || 'Descrição da Espécie é obrigatória']"
                   label="Descrição da Espécie"
                   variant="outlined"
                   prepend-inner-icon="mdi-text"
@@ -40,7 +44,10 @@
                 <!-- Campo para a imagem da espécie -->
                 <v-file-input
                   v-model="especie.imagem"
-                  :rules="[v => !!v || 'Imagem é obrigatória', validateImageSize]"
+                  :rules="[
+                    (v) => !!v || 'Imagem é obrigatória',
+                    validateImageSize,
+                  ]"
                   label="Imagem da Espécie"
                   variant="outlined"
                   prepend-inner-icon="mdi-image"
@@ -52,7 +59,10 @@
 
                 <!-- Pré-visualização da imagem -->
                 <div v-if="especie.imagemBase64" class="image-preview">
-                  <img :src="especie.imagemBase64" alt="Pré-visualização da imagem" />
+                  <img
+                    :src="especie.imagemBase64"
+                    alt="Pré-visualização da imagem"
+                  />
                 </div>
 
                 <!-- Botão para salvar -->
@@ -64,13 +74,6 @@
           </v-card>
         </v-col>
       </v-row>
-      <v-footer app>
-        <v-spacer></v-spacer>
-        <div>
-          Nome: {{ user.nome }} | Email: {{ user.email }}
-        </div>
-        <button class="button_loggout" @click="loggout()">Sair</button>
-      </v-footer>
 
       <v-snackbar
         v-model="snackbar.show"
@@ -84,88 +87,92 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useUserStore } from '@/stores/user.store';
-import endpoints from '@/controllers/Endpoints.controller';
-import router from '@/router';
+import { ref } from "vue";
+import { useUserStore } from "@/stores/user.store";
+import endpoints from "@/controllers/Endpoints.controller";
+import router from "@/router";
 
-const userStore = useUserStore()
-let user = ref(false)
+const userStore = useUserStore();
+let user = ref(false);
 setTimeout(async () => {
-  user.value = await userStore.getUserData()
-}, 100)
+  user.value = await userStore.getUserData();
+}, 100);
 
 const especie = ref({
-  nome_cientifico: '',
-  descricao: '',
+  nome_cientifico: "",
+  descricao: "",
   imagem: null,
-  imagemBase64: ''
-})
+  imagemBase64: "",
+});
 
 const snackbar = ref({
   show: false,
-  text: '',
-  color: 'success'
+  text: "",
+  color: "success",
 });
 
 const validateImageSize = (v) => {
-  if (!v) return 'Imagem é obrigatória'
-  if (v[0].size > 2000000) return `A imagem deve ser menor que 2MB`
-  return true
-}
+  if (!v) return "Imagem é obrigatória";
+  if (v[0].size > 2000000) return `A imagem deve ser menor que 2MB`;
+  return true;
+};
 
 const convertImageToBase64 = (event) => {
-  const file = event.target.files[0]
+  const file = event.target.files[0];
   if (file && file.size < 2000000) {
-    const reader = new FileReader()
+    const reader = new FileReader();
     reader.onloadend = () => {
-      especie.value.imagemBase64 = reader.result
-    }
-    reader.readAsDataURL(file)
+      especie.value.imagemBase64 = reader.result;
+    };
+    reader.readAsDataURL(file);
   } else {
-    especie.value.imagemBase64 = false
+    especie.value.imagemBase64 = false;
   }
-}
+};
 
 const handleSubmit = async () => {
-  if (especie.value.nome_cientifico && especie.value.descricao && especie.value.imagemBase64) {
+  if (
+    especie.value.nome_cientifico &&
+    especie.value.descricao &&
+    especie.value.imagemBase64
+  ) {
     try {
       let res = await endpoints.cadastrarEspecie({
         nome_cientifico: especie.value.nome_cientifico,
         descricao: especie.value.descricao,
-        imagem: especie.value.imagemBase64
-      })
+        imagem: especie.value.imagemBase64,
+      });
       if (res) {
-        snackbar.value.text = 'Espécie cadastrada com sucesso!';
-        snackbar.value.color = 'success';
+        snackbar.value.text = "Espécie cadastrada com sucesso!";
+        snackbar.value.color = "success";
         snackbar.value.show = true;
         setTimeout(() => {
-          router.push(`/home`)
+          router.push(`/home`);
         }, 1000);
       }
     } catch (error) {
-      snackbar.value.text = 'Erro ao cadastrar espécie';
-      snackbar.value.color = 'error';
+      snackbar.value.text = "Erro ao cadastrar espécie";
+      snackbar.value.color = "error";
       snackbar.value.show = true;
-      console.error("Erro ao cadastrar espécie:", error)
+      console.error("Erro ao cadastrar espécie:", error);
     }
   } else {
-    snackbar.value.text = 'Complete todos os campos corretamente!';
-    snackbar.value.color = 'warning';
+    snackbar.value.text = "Complete todos os campos corretamente!";
+    snackbar.value.color = "warning";
     snackbar.value.show = true;
-    console.error("Todos os campos são obrigatórios.")
+    console.error("Todos os campos são obrigatórios.");
   }
-}
+};
 
 const goBack = () => {
   // Redireciona para a página anterior
-  router.back()
-}
+  router.back();
+};
 
 const loggout = () => {
-  userStore.logout()
-  router.push('/login')
-}
+  userStore.logout();
+  router.push("/login");
+};
 </script>
 
 <style scoped>

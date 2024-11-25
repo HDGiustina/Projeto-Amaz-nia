@@ -1,130 +1,286 @@
 <template>
   <v-app>
-    <v-container class="fill-height" fluid>
-      <v-row align="center" justify="center">
-        <v-col cols="12" sm="8" md="6" lg="4">
-          <v-card class="home-card" elevation="8">
-            <!-- Logo e Título -->
-            <div class="text-center pt-6">
-              <img src="@/assets/logo.png" alt="Logo do Site" height="80">
-              <h1 class="text-h4 font-weight-bold green-darken-2--text mt-2">TreeAnalytics</h1>
-            </div>
+    <v-app-bar app color="green-darken-2" dark elevation="4">
+      <v-toolbar-title class="text-h5 font-weight-bold d-flex align-center">
+        <v-icon icon="mdi-tree" class="mr-2"></v-icon>
+        TreeAnalytics
+      </v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-btn icon @click="toggleTheme">
+        <v-icon>{{
+          isDarkTheme ? "mdi-weather-sunny" : "mdi-weather-night"
+        }}</v-icon>
+      </v-btn>
+      <v-menu>
+        <template v-slot:activator="{ props }">
+          <v-btn icon v-bind="props">
+            <v-avatar color="green-lighten-1">
+              <span class="text-h6 text-white">{{ userInitials }}</span>
+            </v-avatar>
+          </v-btn>
+        </template>
+        <v-list>
+          <v-list-item>
+            <v-list-item-title>{{ user.nome }}</v-list-item-title>
+            <v-list-item-subtitle>{{ user.email }}</v-list-item-subtitle>
+          </v-list-item>
+          <v-divider></v-divider>
+          <v-list-item @click="logout">
+            <v-list-item-title>
+              <v-icon icon="mdi-logout" class="mr-2"></v-icon>
+              Sair
+            </v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+    </v-app-bar>
 
-            <v-card-text>
-              <!-- Botão para incluir uma nova espécie -->
-              <v-btn color="green-darken-2" block class="mb-4" @click="goToIncluirEspecie">
-                Incluir Espécie
-              </v-btn>
+    <v-main class="fill-height">
+      <v-container fluid class="fill-height">
+        <v-row no-gutters align="stretch" justify="center" class="fill-height">
+          <v-col
+            cols="12"
+            sm="10"
+            md="8"
+            lg="6"
+            class="fill-height d-flex flex-column"
+          >
+            <v-card class="flex-grow-1 ma-4 rounded-lg" elevation="8">
+              <v-card-title
+                class="text-h4 font-weight-bold pb-0 pt-6 text-center green-darken-2--text"
+              >
+                Espécies Cadastradas
+              </v-card-title>
 
-              <div class="list_especies">
-                <!-- Lista de espécies cadastradas -->
-                <div v-for="(especie, index) in especies" :key="index" class="especie-item d-flex align-center">
-                  <img :src="especie?.imagem" alt="Imagem da Espécie" class="especie-imagem" height="50" width="50">
-                  <div class="d-flex justify-space-between ml-2 w-100 align-center">
-                    <span>{{ especie.nome_cientifico }}</span>
-                    <div class="d-flex">
-                      <v-btn icon @click="goToEditarEspecie(especie.id)">
-                        <img src="@/assets/icons/editar.svg" alt="Editar espécie" height="20">
-                      </v-btn>
-                      <v-btn icon @click="excluirEspecie(especie.id)" class="ml-2">
-                        <img src="@/assets/icons/delete.svg" alt="Excluir espécie" height="20">
+              <v-card-text>
+                <v-btn
+                  color="green-darken-2"
+                  block
+                  class="mb-6 mt-4"
+                  @click="goToIncluirEspecie"
+                  prepend-icon="mdi-plus"
+                  elevation="2"
+                  rounded
+                >
+                  Incluir Nova Espécie
+                </v-btn>
+
+                <v-slide-y-transition group>
+                  <v-list
+                    v-if="especies.length"
+                    class="especies-list rounded-lg"
+                    elevation="2"
+                  >
+                    <v-list-item
+                      v-for="especie in especies"
+                      :key="especie.id"
+                      :title="especie.nome_cientifico"
+                      :subtitle="
+                        especie.nome_popular || 'Nome popular não cadastrado'
+                      "
+                      class="mb-2 rounded"
+                    >
+                      <template v-slot:prepend>
+                        <v-avatar size="48" class="mr-3">
+                          <v-img
+                            :src="especie.imagem"
+                            :alt="especie.nome_cientifico"
+                            cover
+                          ></v-img>
+                        </v-avatar>
+                      </template>
+
+                      <template v-slot:append>
+                        <v-btn
+                          icon="mdi-pencil"
+                          variant="text"
+                          color="green-darken-1"
+                          @click="goToEditarEspecie(especie.id)"
+                        ></v-btn>
+                        <v-btn
+                          icon="mdi-delete"
+                          variant="text"
+                          color="red-darken-1"
+                          @click="confirmarExclusao(especie)"
+                        ></v-btn>
+                      </template>
+                    </v-list-item>
+                  </v-list>
+
+                  <v-sheet
+                    v-else
+                    class="d-flex align-center justify-center fill-height rounded-lg"
+                    color="grey-lighten-4"
+                  >
+                    <div class="text-center">
+                      <v-icon
+                        icon="mdi-tree-outline"
+                        size="64"
+                        color="green-lighten-2"
+                      ></v-icon>
+                      <div class="text-h5 mt-4 green-darken-2--text">
+                        Nenhuma espécie cadastrada
+                      </div>
+                      <div class="text-body-1 mt-2">
+                        Comece adicionando uma nova espécie!
+                      </div>
+                      <v-btn
+                        color="green-darken-2"
+                        class="mt-4"
+                        prepend-icon="mdi-plus"
+                        @click="goToIncluirEspecie"
+                      >
+                        Adicionar Espécie
                       </v-btn>
                     </div>
-                  </div>
-                </div>
-              </div>
-            </v-card-text>
-          </v-card>
-        </v-col>
-      </v-row>
-      <v-footer app>
-        <v-spacer></v-spacer>
-        <div>
-          Nome: {{ user.nome }} | Email: {{ user.email }}
-        </div>
-        <button class="button_loggout" @click="loggout()">Sair</button>
-      </v-footer>
-    </v-container>
+                  </v-sheet>
+                </v-slide-y-transition>
+              </v-card-text>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-main>
+
+    <v-dialog v-model="dialogExclusao" max-width="400">
+      <v-card class="rounded-lg pa-2">
+        <v-card-title class="text-h5">Confirmar Exclusão</v-card-title>
+        <v-card-text>
+          Tem certeza que deseja excluir a espécie "{{
+            especieParaExcluir?.nome_cientifico
+          }}"?
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="green-darken-1"
+            variant="text"
+            @click="dialogExclusao = false"
+            >Cancelar</v-btn
+          >
+          <v-btn color="red-darken-1" variant="text" @click="excluirEspecie"
+            >Excluir</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-snackbar
+      v-model="snackbar.show"
+      :color="snackbar.color"
+      :timeout="3000"
+      rounded="pill"
+    >
+      {{ snackbar.text }}
+      <template v-slot:actions>
+        <v-btn color="white" variant="text" @click="snackbar.show = false"
+          >Fechar</v-btn
+        >
+      </template>
+    </v-snackbar>
   </v-app>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useUserStore } from '@/stores/user.store';
-import endpoints from '@/controllers/Endpoints.controller';
-import router from '@/router';
+import { ref, computed, onMounted } from "vue";
+import { useUserStore } from "@/stores/user.store";
+import { useTheme } from "vuetify";
+import endpoints from "@/controllers/Endpoints.controller";
+import { useRouter } from "vue-router";
 
-const userStore = useUserStore()
-let user = ref(false)
-setTimeout(async () => {
-  user.value = await userStore.getUserData()
-}, 100)
+const router = useRouter();
+const userStore = useUserStore();
+const theme = useTheme();
 
-let especies = ref([])
+const user = ref({});
+const especies = ref([]);
+const dialogExclusao = ref(false);
+const especieParaExcluir = ref(null);
+const drawer = ref(false);
+const snackbar = ref({
+  show: false,
+  text: "",
+  color: "success",
+});
 
-setTimeout(async () => {
-  especies.value = await endpoints.getEspecies();
-}, 100)
+const isDarkTheme = computed(() => theme.global.current.value.dark);
+
+const userInitials = computed(() => {
+  if (user.value.nome) {
+    return user.value.nome
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase();
+  }
+  return "";
+});
+
+onMounted(async () => {
+  user.value = await userStore.getUserData();
+  await carregarEspecies();
+});
+
+const carregarEspecies = async () => {
+  try {
+    especies.value = await endpoints.getEspecies();
+  } catch (error) {
+    console.error("Erro ao carregar espécies:", error);
+    showSnackbar("Erro ao carregar espécies", "error");
+  }
+};
 
 const goToIncluirEspecie = () => {
-  // Redireciona para a tela de inclusão de espécie
-  router.push('/cadastraEspecie')
-}
+  router.push("/cadastraEspecie");
+};
 
 const goToEditarEspecie = (id) => {
-  // Redireciona para a tela de edição da espécie
-  router.push(`/editarEspecie/${id}`)
-}
+  router.push(`/editarEspecie/${id}`);
+};
 
-const excluirEspecie = async (id) => { 
-  await endpoints.excluirEspecie(id);
-  especies.value = await endpoints.getEspecies();
-}
+const confirmarExclusao = (especie) => {
+  especieParaExcluir.value = especie;
+  dialogExclusao.value = true;
+};
 
-const loggout = () => {
-  userStore.logout()
-}
+const excluirEspecie = async () => {
+  try {
+    await endpoints.excluirEspecie(especieParaExcluir.value.id);
+    await carregarEspecies();
+    dialogExclusao.value = false;
+    showSnackbar("Espécie excluída com sucesso", "success");
+  } catch (error) {
+    console.error("Erro ao excluir espécie:", error);
+    showSnackbar("Erro ao excluir espécie", "error");
+  }
+};
+
+const logout = () => {
+  userStore.logout();
+  router.push("/login");
+};
+
+const showSnackbar = (text, color) => {
+  snackbar.value = { show: true, text, color };
+};
+
+const toggleTheme = () => {
+  theme.global.name.value = isDarkTheme.value ? "light" : "dark";
+};
 </script>
 
 <style scoped>
-.fill-height {
+/* .fill-height {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, var(--tertiary-color) 100%);
-}
+  background: linear-gradient(
+    135deg,
+    var(--v-theme-surface) 0%,
+    var(--v-theme-secondary) 100%
+  );
+} */
 
-.home-card {
-  border-radius: 16px;
-  backdrop-filter: blur(10px);
-  padding: 24px;
-}
-.especie-item {
-  background: #d9d9d947;
-  margin: 10px 0;
-  padding: 10px;
-  border-radius: 15px;
-  display: flex;
-  align-items: center;
-}
-.especie-item:hover {
-  filter: brightness(0.9);
-  cursor: pointer;
-}
-.especie-imagem {
-  border-radius: 50%;
-  object-fit: cover;
-}
-.button_loggout {
-  background: var(--tertiary-color);
-  margin: 0px 10px 0;
-  padding: 5px 15px;
-  border-radius: 15px !important;
-  transition: all 0.3s;
-}
-.button_loggout:hover {
-  filter: brightness(0.8);
-}
-.list_especies {
-  max-height: 300px;
-  overflow: auto;
+.especies-list {
+  max-height: calc(80vh - 300px);
+  overflow-y: auto;
 }
 </style>

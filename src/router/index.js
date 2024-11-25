@@ -9,6 +9,11 @@ const routes = [
     component: () => import('@/views/Auth/LoginPage.vue'),
   },
   {
+    path: '/register',
+    name: 'Register',
+    component: () => import('@/views/Auth/RegisterPage.vue'),
+  },
+  {
     path: '/home',
     name: 'Home',
     component: () => import('@/views/Home.vue'),
@@ -35,7 +40,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token')
 
-  if (to.name !== 'Login' && !token) {
+  if (!token && to.name !== 'Login' && to.name !== 'Register') {
     next({ name: 'Login' })
   } else if (to.name === 'Login' && token) {
     const session = localStorage.getItem('session')

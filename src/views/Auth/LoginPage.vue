@@ -6,8 +6,12 @@
           <!-- Logo and Title Section -->
           <div class="text-center pt-6">
             <v-icon icon="mdi-tree" color="green-darken-2" size="64"></v-icon>
-            <h1 class="text-h4 font-weight-bold green-darken-2--text mt-2">TreeAnalytics</h1>
-            <p class="text-subtitle-1 text-medium-emphasis">Bem-vindo ao seu portal de análise arbórea</p>
+            <h1 class="text-h4 font-weight-bold green-darken-2--text mt-2">
+              TreeAnalytics
+            </h1>
+            <p class="text-subtitle-1 text-medium-emphasis">
+              Bem-vindo ao seu portal de análise arbórea
+            </p>
           </div>
 
           <v-card-text>
@@ -92,73 +96,73 @@
         </v-card>
       </v-col>
     </v-row>
-    
+
     <!-- Snackbar for notifications -->
-    <v-snackbar
-      v-model="snackbar.show"
-      :color="snackbar.color"
-      :timeout="3000"
-    >
+    <v-snackbar v-model="snackbar.show" :color="snackbar.color" :timeout="3000">
       {{ snackbar.text }}
     </v-snackbar>
   </v-container>
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue';
-import endpoints from '@/controllers/Endpoints.controller';
+import { ref, reactive } from "vue";
+import router from "@/router";
+import endpoints from "@/controllers/Endpoints.controller";
 
 // Form refs and reactive variables
 const form = ref(null);
-const email = ref('');
-const password = ref('');
+const email = ref("");
+const password = ref("");
 const showPassword = ref(false);
 const rememberMe = ref(false);
 const loading = ref(false);
 
 // Validation rules
 const emailRules = [
-  v => !!v || 'Email é obrigatório',
-  v => /.+@.+\..+/.test(v) || 'Email precisa ser válido'
+  (v) => !!v || "Email é obrigatório",
+  (v) => /.+@.+\..+/.test(v) || "Email precisa ser válido",
 ];
 
 const passwordRules = [
-  v => !!v || 'Senha é obrigatória',
-  v => v.length >= 6 || 'Senha deve ter no mínimo 6 caracteres'
+  (v) => !!v || "Senha é obrigatória",
+  (v) => v.length >= 6 || "Senha deve ter no mínimo 6 caracteres",
 ];
 
 // Snackbar state
 const snackbar = reactive({
   show: false,
-  text: '',
-  color: 'success'
+  text: "",
+  color: "success",
 });
 
 // Login handler
 const handleLogin = async () => {
   const { valid } = await form.value.validate();
-  
+
   if (!valid) return;
-  
+
   loading.value = true;
-  
+
   try {
     // Simulated API call
-    let res = await endpoints.fazerLogin({ email: email.value, senha: password.value })
+    let res = await endpoints.fazerLogin({
+      email: email.value,
+      senha: password.value,
+    });
 
-    console.log(res)
-    if(res){
-      snackbar.text = 'Login realizado com sucesso!';
-      snackbar.color = 'success';
+    console.log(res);
+    if (res) {
+      snackbar.text = "Login realizado com sucesso!";
+      snackbar.color = "success";
       snackbar.show = true;
     } else {
-      snackbar.text = 'Erro ao realizar login. Tente novamente.';
-      snackbar.color = 'error';
+      snackbar.text = "Erro ao realizar login. Tente novamente.";
+      snackbar.color = "error";
       snackbar.show = true;
     }
   } catch (error) {
-    snackbar.text = 'Erro ao realizar login. Tente novamente.';
-    snackbar.color = 'error';
+    snackbar.text = "Erro ao realizar login. Tente novamente.";
+    snackbar.color = "error";
     snackbar.show = true;
   } finally {
     loading.value = false;
@@ -173,12 +177,13 @@ const socialLogin = (provider) => {
 
 // Navigation handlers
 const goToRegister = () => {
-  console.log('Navigate to register page');
+  console.log("Navigate to register page");
+  router.push("/register");
   // Implement navigation logic
 };
 
 const forgotPassword = () => {
-  console.log('Navigate to forgot password page');
+  console.log("Navigate to forgot password page");
   // Implement forgot password logic
 };
 </script>

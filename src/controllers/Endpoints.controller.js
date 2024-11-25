@@ -22,6 +22,18 @@ const endpoints = {
             });
     },
 
+    async register(dados) {
+        return await api.post('/usuarios', dados)
+            .then((response) => {
+                if (response.data) {
+                    return response.data.data
+                }
+            })
+            .catch(() => {
+                return false;
+            });
+    },
+
     async getEspecies(){
         return await api.get('/especies')
         .then((response) => {
