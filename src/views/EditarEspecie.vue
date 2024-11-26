@@ -951,7 +951,7 @@ const atualizaBioReprodutiva = async () => {
 // Ocorrencia
 const atualizaOcorrencianatural = async () => {
   loading.value = true;
-  ocorrenciaNatural.value = false;
+  // ocorrenciaNatural.value = false;
   let res = await endpoints.getCaracteristica(id, "ocorrencias-naturais");
   if (res) {
     ocorrenciaNatural.value = res;
