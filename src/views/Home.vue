@@ -88,7 +88,7 @@
                       </v-list>
                     </template>
                     <v-list
-                      v-else-if="especies.length"
+                      v-else-if="especies && especies.length"
                       class="especies-list rounded-lg"
                       elevation="2"
                     >
@@ -126,7 +126,7 @@
                     </v-list>
                     <v-sheet
                       v-else
-                      class="d-flex align-center justify-center fill-height rounded-lg"
+                      class="d-flex align-center justify-center fill-height rounded-lg pa-6"
                       color="grey-lighten-4"
                     >
                       <div class="text-center">
@@ -305,7 +305,7 @@ const toggleTheme = () => {
 } */
 
 .especies-list {
-  max-height: calc(100vh - 300px);
+  max-height: calc(100vh);
   overflow-y: auto;
 }
 </style>
