@@ -305,7 +305,7 @@ const toggleTheme = () => {
 } */
 
 .especies-list {
-  max-height: calc(80vh - 300px);
+  max-height: calc(100vh - 300px);
   overflow-y: auto;
 }
 </style>
