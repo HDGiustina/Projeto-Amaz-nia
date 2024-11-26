@@ -96,9 +96,6 @@
                         v-for="especie in especies"
                         :key="especie.id"
                         :title="especie.nome_cientifico"
-                        :subtitle="
-                          especie.nome_popular || 'Nome popular não cadastrado'
-                        "
                         class="mb-2 rounded"
                       >
                         <template v-slot:prepend>
