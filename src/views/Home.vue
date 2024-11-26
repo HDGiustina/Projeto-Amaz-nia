@@ -66,74 +66,95 @@
                 </v-btn>
 
                 <v-slide-y-transition group>
-                  <v-list
-                    v-if="especies.length"
-                    class="especies-list rounded-lg"
-                    elevation="2"
-                  >
-                    <v-list-item
-                      v-for="especie in especies"
-                      :key="especie.id"
-                      :title="especie.nome_cientifico"
-                      :subtitle="
-                        especie.nome_popular || 'Nome popular não cadastrado'
-                      "
-                      class="mb-2 rounded"
+                  <div>
+                    <template v-if="loadingEspecies">
+                      <v-list class="especies-list rounded-lg" elevation="2">
+                        <v-list-item
+                          v-for="index in 5"
+                          :key="'skeleton-' + index"
+                          class="mb-2 rounded"
+                        >
+                          <template v-slot:prepend>
+                            <v-skeleton-loader
+                              type="avatar"
+                              class="mr-3"
+                            ></v-skeleton-loader>
+                          </template>
+                          <v-skeleton-loader
+                            type="text"
+                            class="flex-grow-1"
+                          ></v-skeleton-loader>
+                        </v-list-item>
+                      </v-list>
+                    </template>
+                    <v-list
+                      v-else-if="especies.length"
+                      class="especies-list rounded-lg"
+                      elevation="2"
                     >
-                      <template v-slot:prepend>
-                        <v-avatar size="48" class="mr-3">
-                          <v-img
-                            :src="especie.imagem"
-                            :alt="especie.nome_cientifico"
-                            cover
-                          ></v-img>
-                        </v-avatar>
-                      </template>
-
-                      <template v-slot:append>
-                        <v-btn
-                          icon="mdi-pencil"
-                          variant="text"
-                          color="green-darken-1"
-                          @click="goToEditarEspecie(especie.id)"
-                        ></v-btn>
-                        <v-btn
-                          icon="mdi-delete"
-                          variant="text"
-                          color="red-darken-1"
-                          @click="confirmarExclusao(especie)"
-                        ></v-btn>
-                      </template>
-                    </v-list-item>
-                  </v-list>
-
-                  <v-sheet
-                    v-else
-                    class="d-flex align-center justify-center fill-height rounded-lg"
-                    color="grey-lighten-4"
-                  >
-                    <div class="text-center">
-                      <v-icon
-                        icon="mdi-tree-outline"
-                        size="64"
-                        color="green-lighten-2"
-                      ></v-icon>
-                      <div class="text-h5 mt-4 green-darken-2--text">
-                        Nenhuma espécie cadastrada
-                      </div>
-                      <div class="text-body-1 mt-2">
-                        Comece adicionando uma nova espécie!
-                      </div>
-                      <v-btn
-                        color="green-darken-2"
-                        class="mt-4"
-                        prepend-icon="mdi-plus"
-                        @click="goToIncluirEspecie"
+                      <v-list-item
+                        v-for="especie in especies"
+                        :key="especie.id"
+                        :title="especie.nome_cientifico"
+                        :subtitle="
+                          especie.nome_popular || 'Nome popular não cadastrado'
+                        "
+                        class="mb-2 rounded"
                       >
-                        Adicionar Espécie
-                      </v-btn>
-                    </div>
-                  </v-sheet>
+                        <template v-slot:prepend>
+                          <v-avatar size="48" class="mr-3">
+                            <v-img
+                              :src="especie.imagem"
+                              :alt="especie.nome_cientifico"
+                              cover
+                            ></v-img>
+                          </v-avatar>
+                        </template>
+
+                        <template v-slot:append>
+                          <v-btn
+                            icon="mdi-pencil"
+                            variant="text"
+                            color="green-darken-1"
+                            @click="goToEditarEspecie(especie.id)"
+                          ></v-btn>
+                          <v-btn
+                            icon="mdi-delete"
+                            variant="text"
+                            color="red-darken-1"
+                            @click="confirmarExclusao(especie)"
+                          ></v-btn>
+                        </template>
+                      </v-list-item>
+                    </v-list>
+                    <v-sheet
+                      v-else
+                      class="d-flex align-center justify-center fill-height rounded-lg"
+                      color="grey-lighten-4"
+                    >
+                      <div class="text-center">
+                        <v-icon
+                          icon="mdi-tree-outline"
+                          size="64"
+                          color="green-lighten-2"
+                        ></v-icon>
+                        <div class="text-h5 mt-4 green-darken-2--text">
+                          Nenhuma espécie cadastrada
+                        </div>
+                        <div class="text-body-1 mt-2">
+                          Comece adicionando uma nova espécie!
+                        </div>
+                        <v-btn
+                          color="green-darken-2"
+                          class="mt-4"
+                          prepend-icon="mdi-plus"
+                          @click="goToIncluirEspecie"
+                        >
+                          Adicionar Espécie
+                        </v-btn>
+                      </div>
+                    </v-sheet>
+                  </div>
                 </v-slide-y-transition>
               </v-card-text>
             </v-card>
@@ -194,6 +215,7 @@ const theme = useTheme();
 
 const user = ref({});
 const especies = ref([]);
+const loadingEspecies = ref(true);
 const dialogExclusao = ref(false);
 const especieParaExcluir = ref(null);
 const drawer = ref(false);
@@ -223,10 +245,13 @@ onMounted(async () => {
 
 const carregarEspecies = async () => {
   try {
+    loadingEspecies.value = true;
     especies.value = await endpoints.getEspecies();
   } catch (error) {
     console.error("Erro ao carregar espécies:", error);
     showSnackbar("Erro ao carregar espécies", "error");
+  } finally {
+    loadingEspecies.value = false;
   }
 };
 
