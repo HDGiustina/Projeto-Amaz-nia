@@ -11,16 +11,16 @@
           isDarkTheme ? "mdi-weather-sunny" : "mdi-weather-night"
         }}</v-icon>
       </v-btn>
-      <v-menu>
+      <v-menu transition="slide-y-transition">
         <template v-slot:activator="{ props }">
           <v-btn icon v-bind="props">
             <v-avatar color="green-lighten-1">
-              <span class="text-h6 text-white">{{ userInitials }}</span>
+              <span class="text-white">{{ userInitials }}</span>
             </v-avatar>
           </v-btn>
         </template>
         <v-list>
-          <v-list-item>
+          <v-list-item class="mb-2">
             <v-list-item-title>{{ user.nome }}</v-list-item-title>
             <v-list-item-subtitle>{{ user.email }}</v-list-item-subtitle>
           </v-list-item>
