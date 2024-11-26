@@ -246,7 +246,10 @@ onMounted(async () => {
 const carregarEspecies = async () => {
   try {
     loadingEspecies.value = true;
-    especies.value = await endpoints.getEspecies();
+    let res = await endpoints.getEspecies();
+    if(res){
+      especies.value = res
+    }
   } catch (error) {
     console.error("Erro ao carregar espécies:", error);
     showSnackbar("Erro ao carregar espécies", "error");
