@@ -146,7 +146,7 @@ const endpoints = {
     },
 
     async getAnexos(id, url){
-        return await api.get('/'+ url )
+        return await api.get('/'+ url + '/' + id )
         .then((response) => {
             if (response.data) {
                 return response.data.data
